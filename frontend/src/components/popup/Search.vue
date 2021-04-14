@@ -22,7 +22,7 @@
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-subtitle class=" font-weight-bold">대화상대 검색</v-toolbar-subtitle>
+          <v-toolbar-title class=" font-weight-bold">대화상대 검색</v-toolbar-title>
           <v-spacer></v-spacer>
             <v-btn dark text @click="dialog = false">
               <font-awesome-icon icon="search" class="fa-lg"></font-awesome-icon>

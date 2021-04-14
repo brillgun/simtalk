@@ -1,7 +1,9 @@
 <template>
   <v-card>
-        <v-card-title class="headline">Use Google's location service?</v-card-title>
-        <v-card-subtitle>{{userData}}</v-card-subtitle>
+        <v-card-title class="justify-center">안내</v-card-title>
+        <v-card-subtitle class="text-center">
+          채팅을 시작하면 {{ point }} 포인트가 사용됩니다.<br/>
+          {{userData.nickName}} 님과 채팅을 시작할까요?</v-card-subtitle>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="close">닫기</v-btn>
@@ -12,19 +14,19 @@
 
 <script>
 export default {
-  props: {
-    userData: {},
-  },
+  name: 'UserDetail',
+  props: ['userData'],
   data () {
       return {
+          point: 30,
         }
     },
   methods: {
         close: function(){
           this.$emit("close", false);
         },
-        chat: function(idx){
-          window.location.href = "/chat?" + idx
+        chat: function(userIdx){
+          this.$router.push({ name: 'Chat', params: { userIdx: userIdx }});
         }
   },
 }
