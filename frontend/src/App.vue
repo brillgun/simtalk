@@ -1,11 +1,11 @@
 <template>
   <v-app>
-      <Top/>
+      <Top app class="header"/>
     <v-main>
-      <router-view />
+        <router-view />
     </v-main>
-    <v-footer app>
-      <Bottom v-show="isFooter"/>
+    <v-footer app v-show="isFooter">
+      <Bottom />
     </v-footer>
   </v-app>
 </template>
@@ -32,3 +32,10 @@ export default {
   }
 };
 </script>
+<style scoped>
+.header{
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+}
+</style>

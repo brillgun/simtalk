@@ -1,25 +1,28 @@
 <template>
-  <v-bottom-navigation
+  <v-footer
   absolute
-  :class="`elevation-10`"
-  color="purple accent-3"
-  > 
+  elevation="0"
+  color="white"
+  height="60"
+  >
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
-    <v-btn @click="goMenu('HOME')" :class="menuName === this.CONST.MENU_NAME.HOME ? 'v-btn--active' : ''">
+    <v-btn icon @click="goMenu('HOME')" name="footer-btn" :color="this.menuName === 'HOME' ? 'purple' : ''">
       <font-awesome-icon icon="landmark" class="fa-2x"></font-awesome-icon>
     </v-btn>
-    <v-spacer class="pa-md-4"></v-spacer>
-    <v-btn @click="goMenu('CHAT')" :class="menuName === this.CONST.MENU_NAME.CHAT ? 'v-btn--active' : ''">
+    <v-spacer class=""></v-spacer>
+    <v-spacer class=""></v-spacer>
+    <v-btn icon @click="goMenu('CHAT')" name="footer-btn" :color="this.menuName === 'CHAT' ? 'purple' : ''">
       <font-awesome-icon icon="comments" class="fa-2x"></font-awesome-icon>
     </v-btn>
-    <v-spacer></v-spacer>
-    <v-btn @click="goMenu('MORE')" :class="menuName === this.CONST.MENU_NAME.MORE ? 'v-btn--active' : ''">
+    <v-spacer class=""></v-spacer>
+    <v-spacer class=""></v-spacer>
+    <v-btn icon @click="goMenu('MORE')" name="footer-btn" :color="this.menuName === 'MORE' ? 'purple' : ''">
       <font-awesome-icon icon="ellipsis-h" class="fa-2x"></font-awesome-icon>
     </v-btn>
     <v-spacer></v-spacer>
     <v-spacer></v-spacer>
-  </v-bottom-navigation>
+  </v-footer>
 </template>
 
 <script>
@@ -31,8 +34,22 @@ export default {
     };
   },
   created: function() {
+    this.$EventBus.$on(
+        this.CONST.EVENTS.SET_FOOTER_MENU,
+        function(v) {
+          let button = document.getElementsByName('footer-btn');
+          for (let i = 0; i < button.length; i++) {
+            button[i].classList.remove('v-btn--active')
+          }
+          this.menuName = v;
+        }.bind(this),
+    );
   },
   mounted() {
+  },
+  updated() {
+  },
+  watch:{
   },
   methods: {
     goMenu(name){

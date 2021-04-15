@@ -1,32 +1,37 @@
 <template>
-  <v-list two-line>
-    <template v-for="(item, index) in chatList">
-      <v-subheader
-          v-if="item.header"
-          :key="item.header"
-          v-text="item.header"
-      ></v-subheader>
+  <v-container>
+    <v-toolbar flat height="40px"></v-toolbar>
+    <v-list v-for="(item, i) in chatList" :key="i">
+        <v-subheader
+            v-if="item.header"
+            v-text="item.header"
+        ></v-subheader>
 
-      <v-list-item
-          v-else
-          :key="item.title"
-      >
-        <v-list-item-avatar>
-          <v-img :src="item.avatar"></v-img>
-        </v-list-item-avatar>
+        <v-list-item
+            v-else
+            @click="goChat(item)"
+        >
+          <v-list-item-avatar>
+            <v-img :src="item.photo"></v-img>
+          </v-list-item-avatar>
 
-        <v-list-item-content>
-          <v-list-item-title v-html="item.title"></v-list-item-title>
-          <v-list-item-subtitle v-html="item.subtitle"></v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-divider
-          :key="index"
-          :inset="item.inset"
-      ></v-divider>
-    </template>
-    <v-list-item-title class="text-center mt-10">채팅방이 없습니다.</v-list-item-title>
-  </v-list>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{item.nickName}}
+              <span class="red--text text--lighten-1" v-if="item.nonRead === 0">●</span>
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              {{ item.reply }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider
+            :inset="item.inset"
+        ></v-divider>
+    </v-list>
+    <v-list-item-title class="text-center mt-8" v-if="chatList.length < 1">채팅방이 없습니다.</v-list-item-title>
+    <v-footer app color="white" height="80px"></v-footer>
+  </v-container>
 </template>
 
 <script>
@@ -36,29 +41,92 @@
       return {
         chatList: [
           {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-            title: 'Brunch this weekend?',
-            subtitle: `<span class="text--primary">Ali Connors</span> &mdash; I'll be in your neighborhood doing errands this weekend. Do you want to hang out?`,
+            roomIdx: 2020729357,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
+            nickName: 'Brunch this weekend?',
+            reply: 'I\'ll be in your neighborhood doing errands this weekend. Do you want to hang out?',
+            nonRead: 0,
           },
           {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-            title: 'Summer BBQ <span class="grey--text text--lighten-1">4</span>',
-            subtitle: `<span class="text--primary">to Alex, Scott, Jennifer</span> &mdash; Wish I could come, but I'm out of town this weekend.`,
+            roomIdx: 20213749679,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
+            nickName: 'Summer BBQ',
+            reply: 'Do you want to hang out?',
+            nonRead: 1,
           },
           {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-            title: 'Oui oui',
-            subtitle: '<span class="text--primary">Sandra Adams</span> &mdash; Do you have Paris recommendations? Have you ever been?',
+            roomIdx: 20208543968,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
+            nickName: 'Oui oui',
+            reply: 'I\'ll be in your errands this weekend. Do you want to hang out?',
+            nonRead: 0,
           },
           {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
-            title: 'Birthday gift',
-            subtitle: '<span class="text--primary">Trevor Hansen</span> &mdash; Have any ideas about what we should get Heidi for her birthday?',
+            roomIdx: 202137495694,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
+            nickName: 'Birthday gift',
+            reply: 'I\'ll be in your neighborhood doing errands this to hang.',
+            nonRead: 0,
           },
           {
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            title: 'Recipe to try',
-            subtitle: '<span class="text--primary">Britta Holt</span> &mdash; We should eat this: Grate, Squash, Corn, and tomatillo Tacos.',
+            roomIdx: 20204378931,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+            nickName: 'Recipe to try',
+            reply: 'I\'ll be in your errands this weekend. Do you want.',
+            nonRead: 1,
+          },
+          {
+            roomIdx: 20204378931,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+            nickName: 'Recipe to try',
+            reply: 'I\'ll be in your errands this weekend. Do you want.',
+            nonRead: 1,
+          },
+          {
+            roomIdx: 20204378931,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+            nickName: 'Recipe to try',
+            reply: 'I\'ll be in your errands this weekend. Do you want.',
+            nonRead: 1,
+          },
+          {
+            roomIdx: 20204378931,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+            nickName: 'Recipe to try',
+            reply: 'I\'ll be in your errands this weekend. Do you want.',
+            nonRead: 1,
+          },
+          {
+            roomIdx: 20204378931,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+            nickName: 'Recipe to try',
+            reply: 'I\'ll be in your errands this weekend. Do you want.',
+            nonRead: 1,
+          },
+          {
+            roomIdx: 20204378931,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+            nickName: 'Recipe to try',
+            reply: 'I\'ll be in your errands this weekend. Do you want.',
+            nonRead: 1,
+          },
+          {
+            roomIdx: 20204378931,
+            userIdx: 2020,
+            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
+            nickName: 'Recipe to try',
+            reply: 'I\'ll be in your errands this weekend. Do you want.',
+            nonRead: 1,
           },
         ],
       }
@@ -81,6 +149,9 @@
       doDeleteList(){
         this.chatList = []
       },
+      goChat(data){
+        this.$router.push({name:'Chat', params:{userData:data}})
+      }
     }
   }
 </script>

@@ -7,6 +7,7 @@ import VueMoment from 'vue-moment';
 import VueSession from 'vue-session';
 import CONST from '@/constants';
 import Common from '@/plugins/common';
+import vClickOutside from 'v-click-outside';
 var sessionOptions = {
   persist: true,
 };
@@ -14,6 +15,7 @@ Vue.prototype.$EventBus = new Vue();
 Vue.prototype.CONST = CONST;
 Vue.use(VueSession, sessionOptions);
 Vue.use(VueMoment);
+Vue.use(vClickOutside);
 Vue.use(Common);
 
 Vue.config.productionTip = false
