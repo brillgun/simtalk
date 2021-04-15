@@ -1,15 +1,9 @@
 <template>
   <v-container fluid class="pt-2"
   >
-    <v-toolbar flat height="60px"></v-toolbar>
+    <v-toolbar flat height="60px" :ref="'scrollTop'"></v-toolbar>
       <!-- SEARCH BAR -->
       <Search/>
-
-      <!-- Detail Popup-->
-      <v-dialog v-model="dialog" persistent max-width="350">
-        <UserDetail v-on:close="popupClose" :userData="userData" />
-      </v-dialog>
-
       <!-- LIST  -->
       <v-row class="pa-2" align="start" justify="start">
         <v-col class="pa-1"
@@ -23,10 +17,10 @@
               :color="active ? 'primary' : ''"
                 class="d-flex align-center"
                 dark
-                @click="cardDetail(userList[i])"
+                @click="openPopup(userList[i])"
              >
               <v-img
-                :src="user.photo !== null || user.photo !== '' ? user.photo + i : basicPhoto"
+                :src="user.photo !== null || user.photo !== '' ? user.photo : basicPhoto"
                 class="white--text align-end"
                 dark
                 height="100px"
@@ -34,11 +28,12 @@
               <div class="fill-height bottom-gradient">
                   <div class="text-right pr-2 pl-2">
                   <span class="pl-2 pr-1 caption font-weight-regular dist" v-text="user.dist + 'km'"></span>
+                    <span class="caption pr-1 font-weight-regular dist">{{user.age + '세'}}</span>
                     <span class="subtitle-2 pr-1" >
                       <font-awesome-icon icon="mars" v-if="user.gender === 'M'"></font-awesome-icon>
                       <font-awesome-icon icon="venus" v-else></font-awesome-icon>
                     </span>
-                    <span class="d-inline-block subtitle-2 font-weight-bold" v-text="user.nickName"></span>
+                    <span class="d-inline-block subtitle-2 font-weight-bold">{{user.nickName}}</span>
                   </div>
               </div>
               </v-img>
@@ -53,79 +48,76 @@
 
 <script>
 import Search from '@/components/popup/Search';
-import UserDetail from '@/components/popup/UserDetail';
+import CONST from "@/constants";
+
   export default {
     name:'Home',
-    components:{Search, UserDetail},
+    components:{Search},
     data: () => ({
-      dialog: false,
       userData: null,
       sort:'newest',
+      eventType: 'userDetail',
       basicPhoto: 'https://image.flaticon.com/icons/svg/187/187159.svg',
-      userList: [
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 4, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 7, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 7, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 7, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 7, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 7, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 7, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 1, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 2, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 0, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 0, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'W', dist: 0, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-        { userIdx: 2020, nickName: '닉네임입니다 그래서요 암요', photo: 'https://source.unsplash.com/100x100/?human/' , gender: 'M', dist: 5, },
-      ],
+      userList: [],
     }),
     created() {
       this.$EventBus.$on(
-          this.CONST.EVENTS.HOME_LIST_LOADING,
+          CONST.EVENTS.HOME_LIST_LOADING,
           function(v) {
             this.sort = v;
-            this.getDataList();
+            this.getUserList();
           }.bind(this),
       );
     },
     mounted() {
-      this.getDataList();
+      this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE.HOME);
+      this.$EventBus.$emit(CONST.EVENTS.SET_FOOTER_MENU, CONST.MENU_NAME.HOME);
+      this.$refs['scrollTop'].$el.scrollIntoView();
+      this.getUserList();
     },
     methods: {
-      cardDetail: function(i) {
-          this.dialog = !this.dialog;
-          this.userData = i;
+      openPopup: function(selectUserData) {
+        this.$EventBus.$emit(CONST.EVENTS.OPEN_MODAL, this.eventType, selectUserData);
       },
-      popupClose(param){
-        this.dialog = param;
-      },
-      getDataList(){
-        console.log('getDataList ===> sort: ' + this.sort);
+      getUserList(){
+        console.log('getUserList ===> sort: ' + this.sort);
+        this.userList = [];
+        const max = 50;
+        const min = 1;
+        const listCount = Math.floor(Math.random() * (max - min) + min);
+        for (let i = 0; i < listCount; i++) {
+          let nickName = Math.random().toString(36).substr(2,11);
+          const genderMax = 3
+          const genderMin = 1
+          const randomGenderCount = Math.floor(Math.random() * (genderMax - genderMin) + genderMin);
+          const photoMax = 6
+          const photoMin = 1
+          const randomPhotoCount = Math.floor(Math.random() * (photoMax - photoMin) + photoMin);
+          let gender = randomGenderCount % 2 ? 'M' : 'W';
+          this.userList.push(
+              {
+                userIdx: 2020,
+                nickName: nickName,
+                photo: 'https://cdn.vuetifyjs.com/images/lists/' + randomPhotoCount + '.jpg',
+                gender: gender,
+                dist: randomGenderCount + randomPhotoCount + i,
+                age: 30,
+              },
+          )
+        }
       }
     },
   }
 </script>
 
 <style scoped>
-.bottom-gradient {
-    background-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 52px);
+  .bottom-gradient {
+      background-image: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, transparent 52px);
   }
-.subtitle-2{width: 100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .subtitle-2{
+    width: 100%;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+  }
 </style>

@@ -1,9 +1,6 @@
 <template>
   <v-container>
     <v-toolbar flat height="40px"></v-toolbar>
-    <v-dialog v-model="dialog" persistent max-width="350">
-      <Secession v-on:close="popupClose"/>
-    </v-dialog>
     <v-list flat>
       <v-list-item-group
           color="purple"
@@ -26,45 +23,50 @@
 </template>
 
 <script>
-import Secession from '@/components/popup/Secession';
+import CONST from "@/constants";
   export default {
     name: 'more',
-    components:{Secession},
     data: () => ({
-      dialog: false,
+      CONST: CONST,
+      eventType: '',
+      loginUser: null,
       items: [
-        { event: 'profile', text: '프로필',           icon: 'mdi-account-circle' },
-        { event: 'point', text: '포인트충전',        icon: 'mdi-cash' },
-        { event: 'block', text: '차단된 계정',       icon: 'mdi-close-circle' },
-        { event: 'qna', text: '문의하기',         icon: 'mdi-help-circle' },
-        { event: 'terms', text: '이용약관',         icon: 'mdi-comment-alert-outline' },
-        { event: 'policy', text: '개인정보 보호정책',   icon: 'mdi-flag' },
-        { event: 'secession', text: '탈퇴하기',         icon: 'mdi-logout' },
+        { event: CONST.MENU_NAME.PROFILE, text: '프로필',           icon: 'mdi-account-circle' },
+        { event: CONST.MENU_NAME.POINT, text: '포인트충전',        icon: 'mdi-cash' },
+        { event: CONST.MENU_NAME.BLOCK, text: '차단된 계정',       icon: 'mdi-close-circle' },
+        { event: CONST.MENU_NAME.QNA, text: '문의하기',         icon: 'mdi-help-circle' },
+        { event: CONST.MENU_NAME.TERMS, text: '이용약관',         icon: 'mdi-comment-alert-outline' },
+        { event: CONST.MENU_NAME.POLICY, text: '개인정보 보호정책',   icon: 'mdi-flag' },
+        { event: CONST.EVENTS.SECESSION, text: '탈퇴하기',         icon: 'mdi-logout' },
       ],
     }),
+    mounted() {
+      this.$EventBus.$emit(CONST.EVENTS.SET_FOOTER_MENU, CONST.MENU_NAME.MORE);
+    },
     methods:{
         doClickEvent(eventType){
-          if (eventType === 'profile'){
+          if (eventType !== CONST.EVENTS.SECESSION)
+            this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE[eventType]);
+
+          if (eventType === CONST.MENU_NAME.PROFILE){
               this.$router.replace('/profile')
-          } else if (eventType === 'point'){
+          } else if (eventType === CONST.MENU_NAME.POINT){
               this.$router.replace('/point')
-          } else if (eventType === 'block'){
+          } else if (eventType === CONST.MENU_NAME.BLOCK){
               this.$router.replace('/block')
-          } else if (eventType === 'qna'){
+          } else if (eventType === CONST.MENU_NAME.QNA){
               this.$router.replace('/qna')
-          } else if (eventType === 'terms'){
+          } else if (eventType === CONST.MENU_NAME.TERMS){
               this.$router.replace('/terms')
-          } else if (eventType === 'policy'){
+          } else if (eventType === CONST.MENU_NAME.POLICY){
               this.$router.replace('/policy')
-          } else if (eventType === 'secession'){
+          } else if (eventType === CONST.EVENTS.SECESSION){
+              this.eventType = eventType;
               this.openPopup();
           }
         },
         openPopup: function() {
-          this.dialog = !this.dialog;
-        },
-        popupClose(param){
-          this.dialog = param;
+          this.$EventBus.$emit(CONST.EVENTS.OPEN_MODAL, this.eventType, this.loginUser);
         },
     },
   }

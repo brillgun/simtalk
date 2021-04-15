@@ -10,9 +10,9 @@
               <div class="content">
                 <div class="chat-message-group" :class="{'writer-user' : vo.userIdx === loginUser.userIdx}">
                   <div class="chat-messages">
-                    <div class="chat-thumb mr-2" v-if="vo.userIdx === userData.userIdx">
+                    <div class="chat-thumb mr-2" v-if="vo.userIdx === targetUser.userIdx">
                       <v-list-item-avatar class="mr-0">
-                        <v-img :src="userData.photo"></v-img>
+                        <v-img :src="targetUser.photo"></v-img>
                       </v-list-item-avatar>
                     </div>
                     <div class="chat-thumb float-right ml-2" v-if="vo.userIdx === loginUser.userIdx">
@@ -79,43 +79,52 @@
 </template>
 
 <script>
+import CONST from "@/constants";
   export default {
     name: 'Chat',
-    props: ['userData'],
+    props: ['userIdx'],
     data () {
       return {
+        CONST:CONST,
         loginUser: {
           userIdx: 1,
-          photo: 'https://source.unsplash.com/100x100/?human/34759'
+          photo: 'https://cdn.vuetifyjs.com/images/lists/' + 2 + '.jpg',
         },
+        targetUser: null,
         notice: '온라인에서 금전을 요구하거나 타 메신저로\n 유도하는 경우 사기일 수 있으니 주의하세요.',
         message: '',
         loading: false,
         selectedItem: 1,
-        talkList: null,
+        talkList: [],
         scrollHeight: 0,
       }
     },
     mounted() {
+      this.targetUser = this.$route.query.userData;
       this.getMessageList();
-      this.$EventBus.$emit('SET_HEADER_TITLE', 'CHAT');
-      this.$EventBus.$emit('HIDE_FOOTER_MENU', true);
+      this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE.CHAT);
+      this.$EventBus.$emit(CONST.EVENTS.HIDE_FOOTER_MENU, true);
     },
     updated() {
     },
     methods: {
       getMessageList(){
         this.talkList = [];
-        const max = 10
-        const min = 0
+        const max = 20
+        const min = 3
         const count = Math.random() * (max - min) + min;
         for (let i = 0; i < count; i++) {
           let userIdx = i % 2 ? 1 : 2020;
           let text = Math.random().toString(36).substr(2,11);
           this.talkList.push(
-              { text: text,  userIdx: userIdx, regDate: '6:10 PM'}
+              {
+                text: text,
+                userIdx: userIdx,
+                regDate: '6:10 PM',
+              }
           )
         }
+        this.toEndScroll();
       },
       sendMessage () {
         if (this.message.trim() ===''){

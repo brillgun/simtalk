@@ -3,30 +3,29 @@
       color="white"
       elevation="0"
   >
-    <v-dialog v-model="dialog" persistent max-width="350">
-      <Popup v-on:close="popupClose" :userData="userData"/>
-    </v-dialog>
 
-    <!-- 뒤로가기-->
-    <v-btn v-if="$route.name === 'Chat'" class="left-btn" right top icon @click="goChatList">
-      <font-awesome-icon icon="angle-left" class="fa-lg"></font-awesome-icon>
-      <span class="pl-2 font-weight-bold">리스트</span>
-    </v-btn>
 
-    <v-chip-group v-if="$route.name !== 'Chat'" class="logo-area">
+    <v-chip-group v-if="$route.name === CONST.MENU_NAME.HOME || $route.name === CONST.MENU_NAME.MORE || $route.name === CONST.MENU_NAME.CHAT_LIST" class="logo-area">
           <v-img :src="logo" width="24px"></v-img>
-          <v-toolbar-title class="pl-2 gray--text font-weight-bold " v-if="title === 'HOME' || $route.name === 'Home'">광장</v-toolbar-title>
-          <v-toolbar-title class="pl-2 gray--text font-weight-bold " v-else-if="title === 'CHAT' || $route.name === 'Chat'">채팅</v-toolbar-title>
-          <v-toolbar-title class="pl-2 gray--text font-weight-bold " v-else-if="title === 'MORE' || $route.name === 'More'">더보기</v-toolbar-title>
+          <v-toolbar-title class="pl-2 gray--text font-weight-bold ">
+            {{ title }}</v-toolbar-title>
     </v-chip-group>
 
-    <span class="mr-auto ml-auto" v-if="$route.name === 'Chat'">
-      {{userName}}
+    <!-- 뒤로가기-->
+    <v-btn v-else class="left-btn" right top icon @click="goBackMenu">
+      <font-awesome-icon icon="angle-left" class="fa-lg"></font-awesome-icon>
+      <span class="pl-2 font-weight-bold" v-if="$route.name === CONST.MENU_NAME.CHAT">{{ title }}</span>
+      <span class="pl-2 font-weight-bold" v-else>더보기</span>
+    </v-btn>
+
+    <span class="mr-auto ml-auto" v-if="$route.name !== CONST.MENU_NAME.HOME && $route.name !== CONST.MENU_NAME.MORE && $route.name !== CONST.MENU_NAME.CHAT_LIST">
+      <span v-if="$route.name === CONST.MENU_NAME.CHAT">{{userName}}</span>
+      <span v-else>{{title}}</span>
     </span>
 
-    <v-app-bar-nav-icon icon right class="right-btn" v-show="$route.name === 'Home' || $route.name === 'Chat' || $route.name === 'ChatList'">
+    <v-app-bar-nav-icon icon right class="right-btn" v-show="$route.name === CONST.MENU_NAME.HOME || $route.name === CONST.MENU_NAME.CHAT || $route.name === CONST.MENU_NAME.CHAT_LIST">
       <div class="text-center">
-        <v-menu offset-y>
+        <v-menu offset-x>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
                 icon
@@ -42,7 +41,7 @@
                 :key="index"
                 link
             >
-              <v-list-item-title @click="clickEvent(item)">{{ item.title }}</v-list-item-title>
+              <v-list-item-title @click.prevent.stop="clickEvent(item)">{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -53,26 +52,27 @@
 <script>
 import logo from '@/assets/simtalk-logo-fill.png'
 import CONST from "@/constants";
-import Popup from '@/components/popup/Popup';
+
 export default {
   name: 'Top',
-  components: {Popup},
   data: function() {
     return {
-      title: '광장',
+      CONST: CONST,
+      title: CONST.TOP_TITLE.HOME,
       userName: '대화상대명',
       userData: null,
       logo: logo,
       menuList: [],
+      eventType: '',
       homeMenu: [
         { title: '최신순', params: 'newest'},
         { title: '거리순', params: 'distance'},
       ],
       chatListMenu:[
-        {title: '모든 채팅방 나가기', params: 'doOutAllChat'}
+        {title: '모든 채팅방 나가기', params: 'doOutAllChatRoom'}
       ],
       chatMenu:[
-        { title: '채팅방 나가기', params: 'doOutChat'},
+        { title: '채팅방 나가기', params: 'doOutChatRoom'},
         { title: '차단하기', params: 'doBlock'},
         { title: '신고하기', params: 'doDeclaration'},
       ],
@@ -83,8 +83,9 @@ export default {
   },
   created: function() {
     this.$EventBus.$on(
-        this.CONST.EVENTS.SET_HEADER_TITLE,
+        this.CONST.EVENTS.SET_TOP_MENU_TITLE,
         function(title) {
+          console.log(title)
           this.title = title;
         }.bind(this),
     );
@@ -92,61 +93,42 @@ export default {
   mounted() {
   },
   updated() {
-    if (typeof this.$route.params.userData !== 'undefined' && this.$route.params.userData !== null){
-      this.userData = this.$route.params.userData;
+    if (typeof this.$route.query.userData !== 'undefined' && this.$route.query.userData !== null){
+      this.userData = this.$route.query.userData;
       this.userName = this.userData.nickName;
     }
-    if(this.$route.name === 'Home'){
+    if(this.$route.name === this.CONST.MENU_NAME.HOME){
         this.menuList = this.homeMenu;
-    } else if (this.$route.name === 'ChatList'){
+    } else if (this.$route.name === this.CONST.MENU_NAME.CHAT_LIST){
       this.menuList = this.chatListMenu;
-    } else if (this.$route.name === 'Chat'){
+    } else if (this.$route.name === this.CONST.MENU_NAME.CHAT){
       this.menuList = this.chatMenu;
     }
   },
   methods: {
     clickEvent(item){
-      if (this.$route.name === 'Home'){
-        this.$EventBus.$emit(CONST.EVENTS.HOME_LIST_LOADING,item.params);
-      } else if (this.$route.name === 'ChatList'){
-        this.$EventBus.$emit(CONST.EVENTS.CHAT_LIST_LOADING,item.params);
-      } else if (this.$route.name === 'Chat'){
-        if (item.params === 'doOutChat'){
-          this.openPopup();
-        } else if (item.params === 'doBlock'){
-          this.openPopup();
-        } else if (item.params === 'doDeclaration'){
-          this.openPopup();
-        }
+      if (this.$route.name === this.CONST.MENU_NAME.HOME){
+        this.$EventBus.$emit(CONST.EVENTS.HOME_LIST_LOADING, item.params);
+        this.close();
+      } else{
+        this.eventType = item.params;
+        this.openPopup();
       }
     },
-    goChatList(){
-      this.$EventBus.$emit('HIDE_FOOTER_MENU', false);
-      this.$router.replace('/chatList')
-    },
-    delRoom(){
-      console.log('delete', this.userData.userIdx, this.userData.roomIdx);
-      this.goChatList();
-    },
-    doBlock(){
-      let str = this.userData.nickName + '님을 차단하시겠습니까?'
-      if (confirm(str)){
-        console.log('차단완료')
-        this.goChatList();
-      }
-    },
-    doDeclaration(){
-      let str = this.userData.nickName + '님을 신고하시겠습니까?'
-      if (confirm(str)){
-        console.log('신고완료')
-        this.goChatList();
+    goBackMenu(){
+      this.$EventBus.$emit(this.CONST.EVENTS.HIDE_FOOTER_MENU, false);
+      if (this.$route.name === CONST.MENU_NAME.CHAT){
+        this.$router.replace('/chatList')
+      } else{
+        this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE.MORE);
+        this.$router.replace('/more')
       }
     },
     openPopup(){
-      this.dialog = !this.dialog;
+      this.$EventBus.$emit(this.CONST.EVENTS.OPEN_MODAL, this.eventType, this.userData);
     },
-    popupClose(param){
-      this.dialog = param;
+    close(){
+      this.$emit("close", false);
     },
   }
 }

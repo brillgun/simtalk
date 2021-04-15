@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-toolbar flat height="40px"></v-toolbar>
+    <v-toolbar flat height="40px" :ref="'scrollTop'"></v-toolbar>
     <v-list v-for="(item, i) in chatList" :key="i">
         <v-subheader
             v-if="item.header"
@@ -17,11 +17,17 @@
 
           <v-list-item-content>
             <v-list-item-title>
-              {{item.nickName}}
+              {{item.reply}}
               <span class="red--text text--lighten-1" v-if="item.nonRead === 0">●</span>
             </v-list-item-title>
             <v-list-item-subtitle>
-              {{ item.reply }}
+              <span :class="item.gender === 'M' ? 'blue--text' : 'red--text'" class="mr-1">
+                {{ item.nickName }}
+                <span class="mr-1" v-text="item.gender === 'M' ? '남자' : '여자'"></span>
+                <span>{{ item.age + '세' }}</span>
+              </span>
+              <span class="mr-1"> {{item.dist}} km</span>
+              <span> {{item.connectDate}} 일 전</span>
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -35,100 +41,13 @@
 </template>
 
 <script>
+  import CONST from "@/constants";
+
   export default {
     name: 'Chat',
     data () {
       return {
-        chatList: [
-          {
-            roomIdx: 2020729357,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-            nickName: 'Brunch this weekend?',
-            reply: 'I\'ll be in your neighborhood doing errands this weekend. Do you want to hang out?',
-            nonRead: 0,
-          },
-          {
-            roomIdx: 20213749679,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/2.jpg',
-            nickName: 'Summer BBQ',
-            reply: 'Do you want to hang out?',
-            nonRead: 1,
-          },
-          {
-            roomIdx: 20208543968,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/3.jpg',
-            nickName: 'Oui oui',
-            reply: 'I\'ll be in your errands this weekend. Do you want to hang out?',
-            nonRead: 0,
-          },
-          {
-            roomIdx: 202137495694,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/4.jpg',
-            nickName: 'Birthday gift',
-            reply: 'I\'ll be in your neighborhood doing errands this to hang.',
-            nonRead: 0,
-          },
-          {
-            roomIdx: 20204378931,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            nickName: 'Recipe to try',
-            reply: 'I\'ll be in your errands this weekend. Do you want.',
-            nonRead: 1,
-          },
-          {
-            roomIdx: 20204378931,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            nickName: 'Recipe to try',
-            reply: 'I\'ll be in your errands this weekend. Do you want.',
-            nonRead: 1,
-          },
-          {
-            roomIdx: 20204378931,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            nickName: 'Recipe to try',
-            reply: 'I\'ll be in your errands this weekend. Do you want.',
-            nonRead: 1,
-          },
-          {
-            roomIdx: 20204378931,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            nickName: 'Recipe to try',
-            reply: 'I\'ll be in your errands this weekend. Do you want.',
-            nonRead: 1,
-          },
-          {
-            roomIdx: 20204378931,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            nickName: 'Recipe to try',
-            reply: 'I\'ll be in your errands this weekend. Do you want.',
-            nonRead: 1,
-          },
-          {
-            roomIdx: 20204378931,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            nickName: 'Recipe to try',
-            reply: 'I\'ll be in your errands this weekend. Do you want.',
-            nonRead: 1,
-          },
-          {
-            roomIdx: 20204378931,
-            userIdx: 2020,
-            photo: 'https://cdn.vuetifyjs.com/images/lists/5.jpg',
-            nickName: 'Recipe to try',
-            reply: 'I\'ll be in your errands this weekend. Do you want.',
-            nonRead: 1,
-          },
-        ],
+        chatList: [],
       }
     },
     created() {
@@ -140,17 +59,47 @@
       );
     },
     mounted() {
-      this.$EventBus.$emit('SET_HEADER_TITLE', 'CHAT');
+      this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE.CHAT);
+      this.$EventBus.$emit(CONST.EVENTS.SET_FOOTER_MENU, CONST.MENU_NAME.CHAT);
+      this.$refs['scrollTop'].$el.scrollIntoView();
+      this.getRoomList();
     },
     methods: {
-      getDataList(){
-        console.log('getDataList ===> sort: ');
+      getRoomList(){
+        this.chatList = []
+        const max = 20
+        const min = 2
+        const count = Math.floor(Math.random() * (max - min) + min);
+        for (let i = 0; i < count; i++) {
+          let nickName = Math.random().toString(36).substr(2,11);
+          const maxCount = 3
+          const minCount = 1
+          const randomCount = Math.floor(Math.random() * (maxCount - minCount) + minCount);
+          let nonRead = randomCount % 2 ? 0 : 1;
+          let gender = randomCount % 2 ? 'M' : 'W';
+          this.chatList.push(
+              {
+                roomIdx: '20210415E' + i,
+                userIdx: 2020,
+                photo: 'https://cdn.vuetifyjs.com/images/lists/' + (randomCount + 1) + '.jpg',
+                nickName: nickName,
+                reply: 'I\'ll be in your neighborhood doing errands this weekend. Do you want to hang out?',
+                nonRead: nonRead,
+                gender: gender,
+                dist: count + randomCount + i,
+                connectDate : count,
+                age: 30,
+              }
+          )
+        }
+        console.log('getRoomList ===>');
       },
       doDeleteList(){
+        console.log('채팅목록 삭제완료');
         this.chatList = []
       },
-      goChat(data){
-        this.$router.push({name:'Chat', params:{userData:data}})
+      goChat(userData){
+        this.$router.push({path:'/chat/' + userData.userIdx, query:{userData:userData}})
       }
     }
   }
