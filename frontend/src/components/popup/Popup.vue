@@ -4,24 +4,24 @@
         <v-spacer></v-spacer>
         <v-card-subtitle class="text-center pb-0">
 
-          <span v-if="eventType === 'doOutAllChatRoom'" class="pt-0 pb-0" v-text="'모든 채팅방을 나가시겠습니까?'"></span>
+          <span v-if="eventType === CONST.EVENTS.DO_OUT_ALL_ROOM" class="pt-0 pb-0" v-text="'모든 채팅방을 나가시겠습니까?'"></span>
 
-          <span v-else-if="eventType === 'doOutChatRoom'" class="pt-0 pb-0" v-text="'채팅방을 나가시겠습니까?'"></span>
+          <span v-else-if="eventType === CONST.EVENTS.DO_OUT_ROOM" class="pt-0 pb-0" v-text="'채팅방을 나가시겠습니까?'"></span>
 
-          <v-card-subtitle  v-else-if="eventType === 'doBlock'" class="text-center pt-0 pb-0">
+          <v-card-subtitle  v-else-if="eventType === CONST.EVENTS.DO_BLOCK" class="text-center pt-0 pb-0">
             <span class="purple--text font-weight-bold">{{userData.nickName}}</span> 님을 차단 하시겠습니까?
           </v-card-subtitle>
 
-          <v-card-subtitle  v-else-if="eventType === 'doDeclaration'" class="text-center pt-0 pb-0">
+          <v-card-subtitle  v-else-if="eventType === CONST.EVENTS.DO_DECLARATION" class="text-center pt-0 pb-0">
             <span class="purple--text font-weight-bold">{{userData.nickName}}</span> 님을 신고 하시겠습니까?
           </v-card-subtitle>
 
-          <v-card-subtitle  v-else-if="eventType === CONST.EVENTS.SECESSION" class="text-center pt-0 pb-0">
+          <v-card-subtitle  v-else-if="eventType === CONST.EVENTS.DO_SECESSION" class="text-center pt-0 pb-0">
             서비스를 탈퇴하면 채팅, 포인트 등<br/> 활동정보가 모두 삭제됩니다.<br/>
             정말로 탈퇴하시겠습니까?
           </v-card-subtitle>
 
-          <v-card-subtitle  v-else-if="eventType === 'userDetail'" class="text-center pt-0 pb-0">
+          <v-card-subtitle  v-else-if="eventType === CONST.EVENTS.GET_USER_DETAIL" class="text-center pt-0 pb-0">
             채팅을 시작하면 <span class="purple--text font-weight-bold">{{ point }}</span> 포인트가 사용됩니다.<br/>
             <span class="purple--text font-weight-bold">{{userData.nickName}}</span> 님과 채팅을 시작할까요?
           </v-card-subtitle>
@@ -30,12 +30,12 @@
           <v-spacer></v-spacer>
           <v-btn color="purple" text @click="close">취소</v-btn>
           <v-btn color="purple" text @click.prevent.stop="goEventList">
-            <span v-if="eventType === 'doOutAllChatRoom'">나가기</span>
-            <span v-else-if="eventType === 'doOutChatRoom'">나가기</span>
-            <span v-else-if="eventType === 'doBlock'">차단하기</span>
-            <span v-else-if="eventType === 'doDeclaration'">신고하기</span>
-            <span v-else-if="eventType === CONST.EVENTS.SECESSION">탈퇴하기</span>
-            <span v-else-if="eventType === 'userDetail'">대화하기</span>
+            <span v-if="eventType === CONST.EVENTS.DO_OUT_ALL_ROOM">나가기</span>
+            <span v-else-if="eventType === CONST.EVENTS.DO_OUT_ROOM">나가기</span>
+            <span v-else-if="eventType === CONST.EVENTS.DO_BLOCK">차단하기</span>
+            <span v-else-if="eventType === CONST.EVENTS.DO_DECLARATION">신고하기</span>
+            <span v-else-if="eventType === CONST.EVENTS.DO_SECESSION">탈퇴하기</span>
+            <span v-else-if="eventType === CONST.EVENTS.GET_USER_DETAIL">대화하기</span>
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -56,12 +56,12 @@ export default {
       this.$emit("close", false);
     },
     goEventList(){
-      if (this.eventType === 'userDetail') this.doChat();
-      if (this.eventType === 'doOutAllChatRoom') this.doOutAllChatRoom();
-      if (this.eventType === 'doOutChatRoom') this.doOutChatRoom();
-      if (this.eventType === 'doBlock') this.doBlock();
-      if (this.eventType === 'doDeclaration') this.doDeclaration();
-      if (this.eventType === CONST.EVENTS.SECESSION) this.doSecession();
+      if (this.eventType === CONST.EVENTS.GET_USER_DETAIL) this.doChat();
+      if (this.eventType === CONST.EVENTS.DO_OUT_ALL_ROOM) this.doOutAllChatRoom();
+      if (this.eventType === CONST.EVENTS.DO_OUT_ROOM) this.doOutChatRoom();
+      if (this.eventType === CONST.EVENTS.DO_BLOCK) this.doBlock();
+      if (this.eventType === CONST.EVENTS.DO_DECLARATION) this.doDeclaration();
+      if (this.eventType === CONST.EVENTS.DO_SECESSION) this.doSecession();
     },
     doChat(){
       this.$EventBus.$emit(CONST.EVENTS.SET_FOOTER_MENU, CONST.MENU_NAME.CHAT);

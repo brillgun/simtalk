@@ -37,7 +37,7 @@ import CONST from "@/constants";
         { event: CONST.MENU_NAME.QNA, text: '문의하기',         icon: 'mdi-help-circle' },
         { event: CONST.MENU_NAME.TERMS, text: '이용약관',         icon: 'mdi-comment-alert-outline' },
         { event: CONST.MENU_NAME.POLICY, text: '개인정보 보호정책',   icon: 'mdi-flag' },
-        { event: CONST.EVENTS.SECESSION, text: '탈퇴하기',         icon: 'mdi-logout' },
+        { event: CONST.EVENTS.DO_SECESSION, text: '탈퇴하기',         icon: 'mdi-logout' },
       ],
     }),
     mounted() {
@@ -45,7 +45,7 @@ import CONST from "@/constants";
     },
     methods:{
         doClickEvent(eventType){
-          if (eventType !== CONST.EVENTS.SECESSION)
+          if (eventType !== CONST.EVENTS.DO_SECESSION)
             this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE[eventType]);
 
           if (eventType === CONST.MENU_NAME.PROFILE){
@@ -60,7 +60,7 @@ import CONST from "@/constants";
               this.$router.replace('/terms')
           } else if (eventType === CONST.MENU_NAME.POLICY){
               this.$router.replace('/policy')
-          } else if (eventType === CONST.EVENTS.SECESSION){
+          } else if (eventType === CONST.EVENTS.DO_SECESSION){
               this.eventType = eventType;
               this.openPopup();
           }

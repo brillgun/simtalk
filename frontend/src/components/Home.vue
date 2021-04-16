@@ -56,7 +56,7 @@ import CONST from "@/constants";
     data: () => ({
       userData: null,
       sort:'newest',
-      eventType: 'userDetail',
+      eventType: CONST.EVENTS.GET_USER_DETAIL,
       basicPhoto: 'https://image.flaticon.com/icons/svg/187/187159.svg',
       userList: [],
     }),

@@ -3,8 +3,6 @@
       color="white"
       elevation="0"
   >
-
-
     <v-chip-group v-if="$route.name === CONST.MENU_NAME.HOME || $route.name === CONST.MENU_NAME.MORE || $route.name === CONST.MENU_NAME.CHAT_LIST" class="logo-area">
           <v-img :src="logo" width="24px"></v-img>
           <v-toolbar-title class="pl-2 gray--text font-weight-bold ">
@@ -25,23 +23,25 @@
 
     <v-app-bar-nav-icon icon right class="right-btn" v-show="$route.name === CONST.MENU_NAME.HOME || $route.name === CONST.MENU_NAME.CHAT || $route.name === CONST.MENU_NAME.CHAT_LIST">
       <div class="text-center">
-        <v-menu offset-x>
+        <v-menu
+        >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
                 icon
                 v-bind="attrs"
                 v-on="on"
             >
-              <font-awesome-icon icon="bars" class="fa-lg"></font-awesome-icon>
+              <v-icon>mdi-menu</v-icon>
             </v-btn>
           </template>
+
           <v-list>
             <v-list-item
-                v-for="(item, index) in menuList"
-                :key="index"
+                v-for="(item, i) in menuList"
+                :key="i"
                 link
             >
-              <v-list-item-title @click.prevent.stop="clickEvent(item)">{{ item.title }}</v-list-item-title>
+              <v-list-item-title @click="clickEvent(item)">{{ item.title }}</v-list-item-title>
             </v-list-item>
           </v-list>
         </v-menu>
@@ -69,12 +69,12 @@ export default {
         { title: '거리순', params: 'distance'},
       ],
       chatListMenu:[
-        {title: '모든 채팅방 나가기', params: 'doOutAllChatRoom'}
+        {title: '모든 채팅방 나가기', params: CONST.EVENTS.DO_OUT_ALL_ROOM}
       ],
       chatMenu:[
-        { title: '채팅방 나가기', params: 'doOutChatRoom'},
-        { title: '차단하기', params: 'doBlock'},
-        { title: '신고하기', params: 'doDeclaration'},
+        { title: '채팅방 나가기', params: CONST.EVENTS.DO_OUT_ROOM},
+        { title: '차단하기', params: CONST.EVENTS.DO_BLOCK},
+        { title: '신고하기', params: CONST.EVENTS.DO_DECLARATION},
       ],
       showBtn: true,
       active: false,

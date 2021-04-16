@@ -4,7 +4,6 @@
     <v-dialog v-model="dialog" persistent max-width="350">
       <Popup v-on:close="popupClose" :userData="userData" :eventType="eventType"/>
     </v-dialog>
-
     <Top app class="header"/>
     <v-main>
         <router-view />
@@ -31,6 +30,12 @@ export default {
       userData: null,
       loginUser: null,
       dialog: false,
+      items: [
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me 2' },
+      ],
     };
   },
   created() {

@@ -24,7 +24,12 @@ module.exports = {
 		CLOSE_MODAL: 'CLOSE_MODAL',
 		SAVE_MODAL: 'SAVE_MODAL',
 
-		SECESSION: 'SECESSION',
+		DO_DECLARATION: 'doDeclaration',
+		DO_BLOCK: 'doBlock',
+		DO_OUT_ROOM: 'doOutChatRoom',
+		DO_OUT_ALL_ROOM: 'doOutAllChatRoom',
+		GET_USER_DETAIL: 'userDetail',
+		DO_SECESSION: 'secession',
 	},
 	MENU_NAME:{
 		HOME: 'HOME',
