@@ -2,6 +2,7 @@
   <v-toolbar
       color="white"
       elevation="0"
+      @click="notActiveMenu"
   >
     <v-chip-group v-if="$route.name === CONST.MENU_NAME.HOME || $route.name === CONST.MENU_NAME.MORE || $route.name === CONST.MENU_NAME.CHAT_LIST" class="logo-area">
           <v-img :src="logo" width="24px"></v-img>
@@ -30,12 +31,13 @@
                 icon
                 v-bind="attrs"
                 v-on="on"
+                @click="activeMenu"
             >
               <v-icon>mdi-menu</v-icon>
             </v-btn>
           </template>
 
-          <v-list>
+          <v-list v-show="active">
             <v-list-item
                 v-for="(item, i) in menuList"
                 :key="i"
@@ -76,17 +78,20 @@ export default {
         { title: '차단하기', params: CONST.EVENTS.DO_BLOCK},
         { title: '신고하기', params: CONST.EVENTS.DO_DECLARATION},
       ],
-      showBtn: true,
       active: false,
-      dialog: false,
     };
   },
   created: function() {
     this.$EventBus.$on(
         this.CONST.EVENTS.SET_TOP_MENU_TITLE,
         function(title) {
-          console.log(title)
           this.title = title;
+        }.bind(this),
+    );
+    this.$EventBus.$on(
+        this.CONST.EVENTS.CLOSE_TOP_MENU,
+        function() {
+          this.notActiveMenu();
         }.bind(this),
     );
   },
@@ -105,10 +110,20 @@ export default {
       this.menuList = this.chatMenu;
     }
   },
+  watch: {
+  },
   methods: {
+    activeMenu() {
+      this.active = true;
+    },
+    notActiveMenu(e){
+      console.log(e.target.classList)
+      if (this.active) this.active = false
+      else this.active = true
+    },
     clickEvent(item){
       if (this.$route.name === this.CONST.MENU_NAME.HOME){
-        this.$EventBus.$emit(CONST.EVENTS.HOME_LIST_LOADING, item.params);
+        this.$EventBus.$emit(CONST.EVENTS.LIST_LOADING, CONST.MENU_NAME.HOME,item.params);
         this.close();
       } else{
         this.eventType = item.params;

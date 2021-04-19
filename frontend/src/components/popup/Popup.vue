@@ -12,6 +12,10 @@
             <span class="purple--text font-weight-bold">{{userData.nickName}}</span> 님을 차단 하시겠습니까?
           </v-card-subtitle>
 
+          <v-card-subtitle  v-else-if="eventType === CONST.EVENTS.NOT_BLOCK" class="text-center pt-0 pb-0">
+            <span class="purple--text font-weight-bold">{{userData.nickName}}</span> 님을 차단 하제 하시겠습니까?
+          </v-card-subtitle>
+
           <v-card-subtitle  v-else-if="eventType === CONST.EVENTS.DO_DECLARATION" class="text-center pt-0 pb-0">
             <span class="purple--text font-weight-bold">{{userData.nickName}}</span> 님을 신고 하시겠습니까?
           </v-card-subtitle>
@@ -33,6 +37,7 @@
             <span v-if="eventType === CONST.EVENTS.DO_OUT_ALL_ROOM">나가기</span>
             <span v-else-if="eventType === CONST.EVENTS.DO_OUT_ROOM">나가기</span>
             <span v-else-if="eventType === CONST.EVENTS.DO_BLOCK">차단하기</span>
+            <span v-else-if="eventType === CONST.EVENTS.NOT_BLOCK">해제하기</span>
             <span v-else-if="eventType === CONST.EVENTS.DO_DECLARATION">신고하기</span>
             <span v-else-if="eventType === CONST.EVENTS.DO_SECESSION">탈퇴하기</span>
             <span v-else-if="eventType === CONST.EVENTS.GET_USER_DETAIL">대화하기</span>
@@ -62,6 +67,7 @@ export default {
       if (this.eventType === CONST.EVENTS.DO_BLOCK) this.doBlock();
       if (this.eventType === CONST.EVENTS.DO_DECLARATION) this.doDeclaration();
       if (this.eventType === CONST.EVENTS.DO_SECESSION) this.doSecession();
+      if (this.eventType === CONST.EVENTS.NOT_BLOCK) this.notBlock();
     },
     doChat(){
       this.$EventBus.$emit(CONST.EVENTS.SET_FOOTER_MENU, CONST.MENU_NAME.CHAT);
@@ -94,6 +100,10 @@ export default {
       this.close();
       this.$EventBus.$emit(CONST.EVENTS.HIDE_FOOTER_MENU, false);
       this.$router.replace('/chatList')
+    },
+    notBlock(){
+      console.log('차단 해제 완료')
+      this.close();
     },
   },
 }

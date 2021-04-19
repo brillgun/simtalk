@@ -8,7 +8,7 @@ module.exports = {
 	EVENTS: {
 		LOGIN_COMPLETE: 'LOGIN_COMPLETE',
 		LOGOUT_COMPLETE: 'LOGOUT_COMPLETE',
-		HOME_LIST_LOADING: 'HOME_LIST_LOADING',
+		LIST_LOADING: 'LIST_LOADING',
 		CHAT_LIST_LOADING: 'CHAT_LIST_LOADING',
 		SET_FOOTER_MENU: 'SET_FOOTER_MENU',
 		DATA_LOADING: 'DATA_LOADING',
@@ -23,6 +23,7 @@ module.exports = {
 		OPEN_MODAL: 'OPEN_MODAL',
 		CLOSE_MODAL: 'CLOSE_MODAL',
 		SAVE_MODAL: 'SAVE_MODAL',
+		CLOSE_TOP_MENU: 'CLOSE_TOP_MENU',
 
 		DO_DECLARATION: 'doDeclaration',
 		DO_BLOCK: 'doBlock',
@@ -30,6 +31,7 @@ module.exports = {
 		DO_OUT_ALL_ROOM: 'doOutAllChatRoom',
 		GET_USER_DETAIL: 'userDetail',
 		DO_SECESSION: 'secession',
+		NOT_BLOCK: 'notBlock',
 	},
 	MENU_NAME:{
 		HOME: 'HOME',
@@ -49,7 +51,7 @@ module.exports = {
 		MORE: '더보기',
 		PROFILE: '프로필',
 		POINT: '포인트 충전',
-		BLOCK: '차단된 계정',
+		BLOCK: '차단된 회원',
 		QNA: '문의하기',
 		TERMS: '이용약관',
 		POLICY: '개인정보 보호정책',

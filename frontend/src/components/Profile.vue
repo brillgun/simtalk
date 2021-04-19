@@ -2,67 +2,104 @@
   <v-container>
     <v-toolbar flat height="50px"></v-toolbar>
     <v-card
+        elevation="0"
         class="overflow-hidden"
-        color="purple lighten-1"
-        dark
+        color=""
     >
       <v-toolbar
           flat
           color="purple"
       >
-        <v-icon>mdi-account</v-icon>
-        <v-toolbar-title class="font-weight-light">
-          User Profile
+        <v-icon class="white--text">mdi-account</v-icon>
+        <v-toolbar-title class="font-weight-normal white--text">
+          프로필
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-btn
-            color="purple darken-3"
-            fab
-            small
-            @click="isEditing = !isEditing"
-        >
-          <v-icon v-if="isEditing">
-            mdi-close
-          </v-icon>
-          <v-icon v-else>
-            mdi-pencil
-          </v-icon>
+            elevation="0"
+            color="white purple--text"
+            @click="save">
+          SAVE
         </v-btn>
       </v-toolbar>
       <v-card-text>
         <v-text-field
             :disabled="!isEditing"
-            color="white"
-            label="Name"
+            color="purple"
+            label="이름"
+            v-model="loginUser.nickName"
         ></v-text-field>
-        <v-autocomplete
+        <v-radio-group
+            v-model="loginUser.gender"
+            row
+        >
+          <v-radio
+              :disabled="!isEditing"
+              color="purple"
+              label="남자"
+              value="M"
+          ></v-radio>
+          <v-radio
+              :disabled="!isEditing"
+              color="purple"
+              label="여자"
+              value="W"
+          ></v-radio>
+        </v-radio-group>
+        <v-select
             :disabled="!isEditing"
-            :items="states"
-            :filter="customFilter"
-            color="white"
-            item-text="name"
-            label="State"
-        ></v-autocomplete>
+            v-model="loginUser.age"
+            :items="ageList"
+            item-text="codeNm"
+            item-value="codeCd"
+            label="나이"
+            return-object
+            single-line
+            color="purple"
+        ></v-select>
+        <v-select
+            :disabled="!isEditing"
+            v-model="loginUser.location"
+            :items="locationList"
+            item-text="codeNm"
+            item-value="codeCd"
+            label="지역"
+            return-object
+            single-line
+            color="purple"
+        ></v-select>
+        <v-card-subtitle v-show="!isEditing" class="left purple--text">한번 저장한 정보는 수정이 불가능합니다.</v-card-subtitle>
+        <v-container
+            class="px-0"
+            fluid
+        >
+          <v-switch
+              v-model="locationYn"
+              :label="`위치정보 공개: ${locationYn === true ? '공개' : '비공개' }`"
+              color="purple"
+              inset
+          ></v-switch>
+          <v-switch
+              v-model="useYn"
+              :label="`프로필 공개: ${useYn === true ? '공개' : '비공개' }`"
+              color="purple"
+              inset
+          ></v-switch>
+        </v-container>
       </v-card-text>
-      <v-divider></v-divider>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-            :disabled="!isEditing"
-            color="success"
-            @click="save"
-        >
-          Save
-        </v-btn>
       </v-card-actions>
       <v-snackbar
           v-model="hasSaved"
-          :timeout="2000"
+          :timeout="1000"
           absolute
-          bottom
-          left
+          centered
+          center
+          color="purple"
+          class="font-weight-bold text-center"
       >
-        Your profile has been updated
+        저장되었습니다.
       </v-snackbar>
     </v-card>
   </v-container>
@@ -74,16 +111,46 @@ import CONST from "@/constants";
     name: 'more',
     data: () => ({
       CONST: CONST,
-      loginUser: null,
+      loginUser: {
+        userIdx: 1,
+        nickName: '닉네임별명',
+        gender: 'W',
+        age: 30,
+        location: 'SEJONG',
+        point: 1500,
+      },
+      locationYn: true,
+      useYn: true,
       hasSaved: false,
-      isEditing: null,
+      isEditing: true,
       model: null,
-      states: [
-        { name: 'Florida', abbr: 'FL', id: 1 },
-        { name: 'Georgia', abbr: 'GA', id: 2 },
-        { name: 'Nebraska', abbr: 'NE', id: 3 },
-        { name: 'California', abbr: 'CA', id: 4 },
-        { name: 'New York', abbr: 'NY', id: 5 },
+      locationList: [
+        {codeCd: 'GAN', codeNm: '강원',},
+        {codeCd: 'KYU', codeNm: '경기',},
+        {codeCd: 'KNA', codeNm: '경남',},
+        {codeCd: 'KBU', codeNm: '경북',},
+        {codeCd: 'KWA', codeNm: '광주',},
+        {codeCd: 'DAE', codeNm: '대구',},
+        {codeCd: 'DJU', codeNm: '대전',},
+        {codeCd: 'BUS', codeNm: '부산',},
+        {codeCd: 'SEO', codeNm: '서울',},
+        {codeCd: 'SEJONG', codeNm: '세종',},
+        {codeCd: 'ULS', codeNm: '울산',},
+        {codeCd: 'INC', codeNm: '인천',},
+        {codeCd: 'JUN', codeNm: '전남',},
+        {codeCd: 'JUB', codeNm: '전라',},
+        {codeCd: 'JEJ', codeNm: '제주',},
+        {codeCd: 'CHN', codeNm: '충남',},
+        {codeCd: 'CHB', codeNm: '충북',},
+      ],
+      ageList:[
+        {codeCd: 10, codeNm: '10대'},
+        {codeCd: 20, codeNm: '20대'},
+        {codeCd: 30, codeNm: '30대'},
+        {codeCd: 40, codeNm: '40대'},
+        {codeCd: 50, codeNm: '50대'},
+        {codeCd: 60, codeNm: '60대'},
+        {codeCd: 70, codeNm: '70대'},
       ],
     }),
     mounted() {
@@ -99,7 +166,7 @@ import CONST from "@/constants";
             textTwo.indexOf(searchText) > -1
       },
       save () {
-        this.isEditing = !this.isEditing
+        this.isEditing = false
         this.hasSaved = true
       },
     },

@@ -10,7 +10,7 @@
 
         <v-list-item
             v-else
-            @click="goChat(item)"
+            @click="notBlock(item)"
         >
           <v-list-item-avatar>
             <v-img :src="item.photo"></v-img>
@@ -18,25 +18,23 @@
 
           <v-list-item-content>
             <v-list-item-title>
-              {{item.reply}}
-              <span class="red--text text--lighten-1" v-if="item.nonRead === 0">●</span>
+              {{item.nickName}}
             </v-list-item-title>
             <v-list-item-subtitle>
               <span :class="item.gender === 'M' ? 'blue--text' : 'red--text'" class="mr-1">
-                {{ item.nickName }}
                 <span class="mr-1" v-text="item.gender === 'M' ? '남자' : '여자'"></span>
                 <span>{{ item.age + '세' }}</span>
               </span>
-              <span class="mr-1"> {{item.dist}} km</span>
-              <span> {{item.connectDate}} 일 전</span>
             </v-list-item-subtitle>
           </v-list-item-content>
+
+            <v-btn class="purple" dark>해제</v-btn>
         </v-list-item>
         <v-divider
             :inset="item.inset"
         ></v-divider>
     </v-list>
-    <v-list-item-title class="text-center mt-8" v-if="chatList.length < 1">채팅방이 없습니다.</v-list-item-title>
+    <v-list-item-title class="text-center mt-8" v-if="chatList.length < 1">차단된 회원 없습니다.</v-list-item-title>
     <v-footer app color="white" height="80px"></v-footer>
   </v-container>
 </template>
@@ -53,15 +51,17 @@
     },
     created() {
       this.$EventBus.$on(
-          this.CONST.EVENTS.CHAT_LIST_LOADING,
-          function() {
-            this.doDeleteList();
+          this.CONST.EVENTS.LIST_LOADING,
+          function(v) {
+            if (v === CONST.MENU_NAME.BLOCK){
+              this.getRoomList();
+            }
           }.bind(this),
       );
     },
     mounted() {
-      this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE.CHAT);
-      this.$EventBus.$emit(CONST.EVENTS.SET_FOOTER_MENU, CONST.MENU_NAME.CHAT);
+      this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE.BLOCK);
+      this.$EventBus.$emit(CONST.EVENTS.SET_FOOTER_MENU, CONST.MENU_NAME.MORE);
       this.$refs['scrollTop'].$el.scrollIntoView();
       this.getRoomList();
     },
@@ -99,8 +99,9 @@
         console.log('채팅목록 삭제완료');
         this.chatList = []
       },
-      goChat(userData){
-        this.$router.push({path:'/chat/' + userData.userIdx, query:{userData:userData}})
+      notBlock(userData){
+        let eventType = CONST.EVENTS.NOT_BLOCK;
+        this.$EventBus.$emit(CONST.EVENTS.OPEN_MODAL, eventType, userData);
       }
     }
   }

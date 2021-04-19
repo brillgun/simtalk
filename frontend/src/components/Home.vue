@@ -62,10 +62,12 @@ import CONST from "@/constants";
     }),
     created() {
       this.$EventBus.$on(
-          CONST.EVENTS.HOME_LIST_LOADING,
-          function(v) {
-            this.sort = v;
-            this.getUserList();
+          CONST.EVENTS.LIST_LOADING,
+          function(v,sort) {
+            if (v === CONST.MENU_NAME.HOME){
+              this.sort = sort;
+              this.getUserList();
+            }
           }.bind(this),
       );
     },
