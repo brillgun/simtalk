@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click="notActiveTopMenu">
     <v-container style="overflow-y: auto;">
         <v-toolbar flat height="40px"></v-toolbar>
         <pre class="text-center notice grey--text mt-4 mb-4" v-text="notice">
@@ -108,37 +108,44 @@ import CONST from "@/constants";
     updated() {
     },
     methods: {
+      notActiveTopMenu(){
+        this.$EventBus.$emit(CONST.EVENTS.CLOSE_TOP_MENU);
+      },
       getMessageList(){
         this.talkList = [];
         const max = 20
         const min = 3
         const count = Math.random() * (max - min) + min;
         for (let i = 0; i < count; i++) {
-          let userIdx = i % 2 ? 1 : 2020;
+          let userIdx = i % 2 ? this.loginUser.userIdx : this.targetUser.userIdx;
+          let photo = i % 2 ? this.loginUser.photo : this.targetUser.photo;
           let text = Math.random().toString(36).substr(2,11);
           this.talkList.push(
               {
                 text: text,
                 userIdx: userIdx,
+                photo: photo,
                 regDate: '6:10 PM',
               }
           )
         }
-        this.toEndScroll();
+        this.$nextTick(() => {
+          this.toEndScroll();
+        });
       },
       sendMessage () {
-        if (this.message.trim() ===''){
+        if (this.message.trim() === ''){
           return false;
         }
-        let currentTime = this.$moment().format('h:mm A');
         this.loading = true
-        this.talkList.push({ text: this.message,  userIdx: 1, regDate: currentTime},);
+        this.talkList.push({
+          text: this.message,
+          userIdx: 1,
+          regDate: this.$moment().format('h:mm A')
+        });
         this.message = ''
         this.loading = false
-        // setTimeout(() => {
-        //   this.message = ''
-        //   this.loading = false
-        // }, 300)
+        this.autoMessage();
         this.toEndScroll();
       },
       uploadFile(e){
@@ -149,6 +156,23 @@ import CONST from "@/constants";
         await this.$nextTick()
         this.$refs['container-area'].$el.scrollIntoView();
         this.scrollHeight = 0;
+      },
+      autoMessage(){
+        const max = 2000
+        const min = 500
+        const count = Math.random() * (max - min) + min;
+        setTimeout(() => {
+          this.talkList.push(
+              {
+                text: Math.random().toString(36).substr(2,11),
+                userIdx: this.targetUser.userIdx,
+                regDate: this.$moment().format('h:mm A'),
+              }
+          )
+          this.$nextTick(() => {
+            this.toEndScroll();
+          });
+        }, count)
       }
     }
   }

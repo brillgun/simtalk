@@ -93,7 +93,7 @@
               }
           )
         }
-        console.log('getRoomList ===>');
+        console.log('getBlockList ===>');
       },
       doDeleteList(){
         console.log('채팅목록 삭제완료');

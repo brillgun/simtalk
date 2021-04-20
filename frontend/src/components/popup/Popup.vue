@@ -75,7 +75,7 @@ export default {
       this.close();
     },
     doOutAllChatRoom(){
-      this.$EventBus.$emit(CONST.EVENTS.CHAT_LIST_LOADING);
+      this.$EventBus.$emit(CONST.EVENTS.LIST_LOADING, CONST.EVENTS.DO_OUT_ALL_ROOM);
       this.close();
     },
     doOutChatRoom(){
@@ -102,7 +102,7 @@ export default {
       this.$router.replace('/chatList')
     },
     notBlock(){
-      console.log('차단 해제 완료')
+      this.$EventBus.$emit(CONST.EVENTS.LIST_LOADING, CONST.MENU_NAME.BLOCK);
       this.close();
     },
   },

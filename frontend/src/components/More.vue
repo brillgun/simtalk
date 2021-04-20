@@ -1,23 +1,19 @@
 <template>
   <v-container>
-    <v-toolbar flat height="40px"></v-toolbar>
+    <v-toolbar flat height="40px" :ref="'scrollTop'"></v-toolbar>
     <v-list flat
-            class="pt-0 pb-0"
             v-for="(item, i) in items"
             :key="i"
     >
       <v-list-item
           @click="doClickEvent(item.event)">
-        <v-list-item-icon>
-          <v-icon class="purple--text" large v-text="item.icon"></v-icon>
+        <v-list-item-icon class="mt-0 mb-0 pb-0 pt-0">
+          <v-icon large v-text="item.icon"></v-icon>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title class="" v-text="item.text"></v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-<!--      <v-divider-->
-<!--          :inset="item.inset"-->
-<!--      ></v-divider>-->
     </v-list>
   </v-container>
 </template>
@@ -42,12 +38,10 @@ import CONST from "@/constants";
     }),
     mounted() {
       this.$EventBus.$emit(CONST.EVENTS.SET_FOOTER_MENU, CONST.MENU_NAME.MORE);
+      this.$refs['scrollTop'].$el.scrollIntoView();
     },
     methods:{
         doClickEvent(eventType){
-          if (eventType !== CONST.EVENTS.DO_SECESSION)
-            this.$EventBus.$emit(CONST.EVENTS.SET_TOP_MENU_TITLE, CONST.TOP_TITLE[eventType]);
-
           if (eventType === CONST.MENU_NAME.PROFILE){
               this.$router.replace('/profile')
           } else if (eventType === CONST.MENU_NAME.POINT){

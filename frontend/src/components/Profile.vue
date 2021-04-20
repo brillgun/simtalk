@@ -17,21 +17,25 @@
         <v-spacer></v-spacer>
         <v-btn
             elevation="0"
-            color="white purple--text"
+            color="success white--text font-weight-bold"
             @click="save">
           SAVE
         </v-btn>
       </v-toolbar>
       <v-card-text>
+<!--        <label class="label-name"><v-icon v-text="'mdi-checkbox-blank-circle'" x-small class="mr-1"></v-icon>별명</label>-->
         <v-text-field
+            class="mt-0 pt-1 mb-2"
             :disabled="!isEditing"
             color="purple"
-            label="이름"
             v-model="loginUser.nickName"
         ></v-text-field>
+<!--        <label class="label-name"><v-icon v-text="'mdi-checkbox-blank-circle'" x-small class="mr-1"></v-icon>성별</label>-->
         <v-radio-group
+            class="mt-0 pt-1 mb-2"
             v-model="loginUser.gender"
             row
+            :hide-details="!isEditing"
         >
           <v-radio
               :disabled="!isEditing"
@@ -46,8 +50,13 @@
               value="W"
           ></v-radio>
         </v-radio-group>
+        <v-card-subtitle
+            v-show="!isEditing" class="purple--text mt-0 mb-4 pt-0 pb-0 px-0">
+          한번 저장한 별명과 성별은 수정이 불가능합니다.
+        </v-card-subtitle>
+<!--        <label class="label-name"><v-icon v-text="'mdi-checkbox-blank-circle'" x-small class="mr-1"></v-icon>나이</label>-->
         <v-select
-            :disabled="!isEditing"
+            class="mt-0 pt-1 mb-2"
             v-model="loginUser.age"
             :items="ageList"
             item-text="codeNm"
@@ -56,9 +65,11 @@
             return-object
             single-line
             color="purple"
+            id="age"
         ></v-select>
+<!--        <label class="label-name"><v-icon v-text="'mdi-checkbox-blank-circle'" x-small class="mr-1"></v-icon>지역</label>-->
         <v-select
-            :disabled="!isEditing"
+            class="mt-0 pt-1"
             v-model="loginUser.location"
             :items="locationList"
             item-text="codeNm"
@@ -68,7 +79,6 @@
             single-line
             color="purple"
         ></v-select>
-        <v-card-subtitle v-show="!isEditing" class="left purple--text">한번 저장한 정보는 수정이 불가능합니다.</v-card-subtitle>
         <v-container
             class="px-0"
             fluid

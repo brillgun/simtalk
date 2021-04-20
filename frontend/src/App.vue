@@ -6,7 +6,9 @@
     </v-dialog>
     <Top app class="header"/>
     <v-main>
+      <div style="height: 100%" @click="notActiveTopMenu">
         <router-view />
+      </div>
     </v-main>
     <v-footer app v-show="isFooter">
       <Bottom />
@@ -56,6 +58,9 @@ export default {
     );
   },
   methods:{
+    notActiveTopMenu(){
+      this.$EventBus.$emit(CONST.EVENTS.CLOSE_TOP_MENU);
+    },
     openPopup(){
       this.dialog = !this.dialog;
     },

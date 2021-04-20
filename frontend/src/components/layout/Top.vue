@@ -2,7 +2,7 @@
   <v-toolbar
       color="white"
       elevation="0"
-      @click="notActiveMenu"
+      @click="notActiveTopMenu"
   >
     <v-chip-group v-if="$route.name === CONST.MENU_NAME.HOME || $route.name === CONST.MENU_NAME.MORE || $route.name === CONST.MENU_NAME.CHAT_LIST" class="logo-area">
           <v-img :src="logo" width="24px"></v-img>
@@ -91,7 +91,7 @@ export default {
     this.$EventBus.$on(
         this.CONST.EVENTS.CLOSE_TOP_MENU,
         function() {
-          this.notActiveMenu();
+          this.notActiveTopMenu();
         }.bind(this),
     );
   },
@@ -116,10 +116,8 @@ export default {
     activeMenu() {
       this.active = true;
     },
-    notActiveMenu(e){
-      console.log(e.target.classList)
+    notActiveTopMenu(){
       if (this.active) this.active = false
-      else this.active = true
     },
     clickEvent(item){
       if (this.$route.name === this.CONST.MENU_NAME.HOME){

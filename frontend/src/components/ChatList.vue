@@ -53,8 +53,9 @@
     },
     created() {
       this.$EventBus.$on(
-          this.CONST.EVENTS.CHAT_LIST_LOADING,
-          function() {
+          this.CONST.EVENTS.LIST_LOADING,
+          function(v) {
+            if (v === CONST.EVENTS.DO_OUT_ALL_ROOM)
             this.doDeleteList();
           }.bind(this),
       );
